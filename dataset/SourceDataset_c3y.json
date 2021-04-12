@@ -1,0 +1,70 @@
+{
+	"name": "SourceDataset_c3y",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "justabunchofblob",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "*",
+				"folderPath": "*",
+				"container": "movies"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Prop_0",
+				"type": "String"
+			},
+			{
+				"name": "Original Title",
+				"type": "String"
+			},
+			{
+				"name": "Company",
+				"type": "String"
+			},
+			{
+				"name": "Rate",
+				"type": "String"
+			},
+			{
+				"name": "Metascore",
+				"type": "String"
+			},
+			{
+				"name": "Minutes",
+				"type": "String"
+			},
+			{
+				"name": "Release",
+				"type": "String"
+			},
+			{
+				"name": "Budget",
+				"type": "String"
+			},
+			{
+				"name": "Opening Weekend USA",
+				"type": "String"
+			},
+			{
+				"name": "Gross�USA",
+				"type": "String"
+			},
+			{
+				"name": "Gross Worldwide",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

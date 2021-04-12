@@ -1,0 +1,25 @@
+{
+	"name": "DestinationDataset_c3y",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adlsgen3minus1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "heromovies",
+				"folderPath": "dcandmarvel",
+				"fileSystem": "moviesfromblob"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
