@@ -1,0 +1,12 @@
+{
+	"name": "DowList",
+	"properties": {
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://www.dogsofthedow.com/biggest-stock-gainers-today.htm",
+			"enableServerCertificateValidation": false,
+			"authenticationType": "Anonymous"
+		}
+	}
+}
