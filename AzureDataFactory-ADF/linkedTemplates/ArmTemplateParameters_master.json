@@ -1,0 +1,27 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "AzureDataFactory-ADF"
+		},
+		"DowList_properties_typeProperties_url": {
+			"value": "https://www.dogsofthedow.com/biggest-stock-gainers-today.htm"
+		},
+		"KeyVault4Everyone2_properties_typeProperties_baseUrl": {
+			"value": "https://KeyVault4Everyone2.vault.azure.net/"
+		},
+		"adlsgen3minus1_properties_typeProperties_url": {
+			"value": "https://adlsgen3minus1.dfs.core.windows.net"
+		},
+		"justabunchofblob_properties_typeProperties_serviceEndpoint": {
+			"value": "https://justabunchofblob.blob.core.windows.net"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}

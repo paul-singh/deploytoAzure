@@ -1,0 +1,70 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "AzureDataFactory-ADF"
+		},
+		"DowList_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://www.dogsofthedow.com/biggest-stock-gainers-today.htm"
+		},
+		"KeyVault4Everyone2_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://KeyVault4Everyone2.vault.azure.net/"
+		},
+		"adlsgen3minus1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adlsgen3minus1.dfs.core.windows.net"
+		},
+		"justabunchofblob_properties_typeProperties_serviceEndpoint": {
+			"type": "string",
+			"defaultValue": "https://justabunchofblob.blob.core.windows.net"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "AzureDataFactory-ADF_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"DowList_properties_typeProperties_url": {
+						"value": "[parameters('DowList_properties_typeProperties_url')]"
+					},
+					"KeyVault4Everyone2_properties_typeProperties_baseUrl": {
+						"value": "[parameters('KeyVault4Everyone2_properties_typeProperties_baseUrl')]"
+					},
+					"adlsgen3minus1_properties_typeProperties_url": {
+						"value": "[parameters('adlsgen3minus1_properties_typeProperties_url')]"
+					},
+					"justabunchofblob_properties_typeProperties_serviceEndpoint": {
+						"value": "[parameters('justabunchofblob_properties_typeProperties_serviceEndpoint')]"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
