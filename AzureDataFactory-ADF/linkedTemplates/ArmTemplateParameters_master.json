@@ -5,17 +5,26 @@
 		"factoryName": {
 			"value": "AzureDataFactory-ADF"
 		},
+		"PGPProject_ADLSGen2_accountKey": {
+			"value": ""
+		},
 		"DowList_properties_typeProperties_url": {
 			"value": "https://www.dogsofthedow.com/biggest-stock-gainers-today.htm"
 		},
 		"KeyVault4Everyone2_properties_typeProperties_baseUrl": {
 			"value": "https://KeyVault4Everyone2.vault.azure.net/"
 		},
+		"PGPProject_ADLSGen2_properties_typeProperties_url": {
+			"value": "https://adlsgen3minus1.dfs.core.windows.net"
+		},
 		"adlsgen3minus1_properties_typeProperties_url": {
 			"value": "https://adlsgen3minus1.dfs.core.windows.net"
 		},
 		"justabunchofblob_properties_typeProperties_serviceEndpoint": {
 			"value": "https://justabunchofblob.blob.core.windows.net"
+		},
+		"ADFBlobTrigger1_properties_typeProperties_scope": {
+			"value": "/subscriptions/0c88e86e-be17-4f68-867e-da69ea2dc1b0/resourceGroups/Data4Everyone/providers/Microsoft.Storage/storageAccounts/adlsgen3minus1"
 		},
 		"containerUri": {
 			"value": ""

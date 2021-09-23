@@ -7,6 +7,10 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "AzureDataFactory-ADF"
 		},
+		"PGPProject_ADLSGen2_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'PGPProject_ADLSGen2'"
+		},
 		"DowList_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://www.dogsofthedow.com/biggest-stock-gainers-today.htm"
@@ -15,6 +19,10 @@
 			"type": "string",
 			"defaultValue": "https://KeyVault4Everyone2.vault.azure.net/"
 		},
+		"PGPProject_ADLSGen2_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adlsgen3minus1.dfs.core.windows.net"
+		},
 		"adlsgen3minus1_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://adlsgen3minus1.dfs.core.windows.net"
@@ -22,12 +30,135 @@
 		"justabunchofblob_properties_typeProperties_serviceEndpoint": {
 			"type": "string",
 			"defaultValue": "https://justabunchofblob.blob.core.windows.net"
+		},
+		"ADFBlobTrigger1_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/0c88e86e-be17-4f68-867e-da69ea2dc1b0/resourceGroups/Data4Everyone/providers/Microsoft.Storage/storageAccounts/adlsgen3minus1"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/CopyNewFilesByLastModifiedDate')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Copy new and changed files only by using LastModifiedDate",
+				"activities": [
+					{
+						"name": "CopyNewFiles",
+						"description": "Copy new and changed files only by using LastModifiedDate",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "BinarySource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"modifiedDatetimeStart": {
+										"value": "@{pipeline().parameters.LastModified_From}",
+										"type": "Expression"
+									},
+									"modifiedDatetimeEnd": {
+										"value": "@{pipeline().parameters.LastModified_To}",
+										"type": "Expression"
+									},
+									"wildcardFileName": {
+										"value": "*",
+										"type": "Expression"
+									}
+								}
+							},
+							"sink": {
+								"type": "BinarySink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "BinaryDataSourceStore",
+								"type": "DatasetReference",
+								"parameters": {
+									"Container": {
+										"value": "@pipeline().parameters.FolderPath_Source",
+										"type": "Expression"
+									},
+									"Directory": {
+										"value": "@pipeline().parameters.Directory_Source",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "BinaryDataDestinationStore",
+								"type": "DatasetReference",
+								"parameters": {
+									"Container": {
+										"value": "@pipeline().parameters.FolderPath_Destination",
+										"type": "Expression"
+									},
+									"Directory": {
+										"value": "@pipeline().parameters.Directory_Destination",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"FolderPath_Source": {
+						"type": "String",
+						"defaultValue": "sourcefolder"
+					},
+					"Directory_Source": {
+						"type": "String",
+						"defaultValue": "subfolder"
+					},
+					"FolderPath_Destination": {
+						"type": "String",
+						"defaultValue": "destinationfolder"
+					},
+					"Directory_Destination": {
+						"type": "String",
+						"defaultValue": "subfolder"
+					},
+					"LastModified_From": {
+						"type": "String",
+						"defaultValue": "2019-02-01T00:00:00Z"
+					},
+					"LastModified_To": {
+						"type": "String",
+						"defaultValue": "2019-03-01T00:00:00Z"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/BinaryDataSourceStore')]",
+				"[concat(variables('factoryId'), '/datasets/BinaryDataDestinationStore')]"
+			]
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/CopyPipeline_c3y')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
@@ -130,6 +261,22 @@
 							"method": "GET",
 							"headers": {}
 						}
+					},
+					{
+						"name": "Azure Function1",
+						"type": "AzureFunctionActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"headers": {}
+						}
 					}
 				],
 				"policy": {
@@ -139,6 +286,82 @@
 				"annotations": []
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/BinaryDataDestinationStore')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Connection to your data destination store.  ",
+				"linkedServiceName": {
+					"referenceName": "PGPProject_ADLSGen2",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Container": {
+						"type": "string"
+					},
+					"Directory": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@dataset().Directory",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().Container",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/PGPProject_ADLSGen2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/BinaryDataSourceStore')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Connection to your data source store. ",
+				"linkedServiceName": {
+					"referenceName": "adlsgen3minus1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Container": {
+						"type": "string"
+					},
+					"Directory": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@dataset().Directory",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().Container",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/adlsgen3minus1')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/DestinationDataset_c3y')]",
@@ -272,6 +495,23 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/PGPProject_ADLSGen2')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('PGPProject_ADLSGen2_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('PGPProject_ADLSGen2_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/adlsgen3minus1')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -297,6 +537,36 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ADFBlobTrigger1')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "WebPipeline",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/pgpproject-unencrypted/blobs/",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('ADFBlobTrigger1_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/WebPipeline')]"
+			]
 		}
 	]
 }
