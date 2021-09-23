@@ -1,0 +1,24 @@
+{
+	"name": "AzureBlobTrigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "PGPEncrypt",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/pgpproject-unencrypted/blobs/",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/0c88e86e-be17-4f68-867e-da69ea2dc1b0/resourceGroups/Data4Everyone/providers/Microsoft.Storage/storageAccounts/adlsgen3minus1",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}
